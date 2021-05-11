@@ -8,7 +8,6 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import lombok.RequiredArgsConstructor;
-import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -18,7 +17,6 @@ import pl.dietadvisor.common.shared.config.properties.aws.UserCredentialsPropert
 import static com.amazonaws.Protocol.HTTPS;
 
 @Configuration
-@EnableDynamoDBRepositories(basePackages = "pl.dietadvisor.common.*.repository.dynamodb")
 @RequiredArgsConstructor
 @Profile("prod")
 public class DynamodbProdConfig {

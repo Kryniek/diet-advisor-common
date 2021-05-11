@@ -9,12 +9,10 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import pl.dietadvisor.common.shared.config.properties.redis.RedisProperties;
 
 import java.time.Duration;
 
-@EnableRedisRepositories(basePackages = "pl.dietadvisor.common.*.repository.redis")
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfiguration {

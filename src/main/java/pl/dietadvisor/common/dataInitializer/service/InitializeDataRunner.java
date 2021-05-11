@@ -1,4 +1,4 @@
-package pl.dietadvisor.common.productScraper.config.data;
+package pl.dietadvisor.common.dataInitializer.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @RequiredArgsConstructor
 @Profile("dev")
 @Log4j2
-public class DataInitializer implements ApplicationRunner {
+public class InitializeDataRunner implements ApplicationRunner {
     private final ProductScrapeJobRepository productScrapeJobRepository;
     private final ProductScrapeLogRepository productScrapeLogRepository;
     private final ProductRepository productRepository;

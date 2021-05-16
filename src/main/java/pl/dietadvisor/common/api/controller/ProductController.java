@@ -1,10 +1,10 @@
-package pl.dietadvisor.common.productScraper.controller;
+package pl.dietadvisor.common.api.controller;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dietadvisor.common.productScraper.model.Product;
+import pl.dietadvisor.common.productScraper.model.dynamodb.Product;
 import pl.dietadvisor.common.productScraper.service.ProductService;
 
 import javax.validation.constraints.NotBlank;

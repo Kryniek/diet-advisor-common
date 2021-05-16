@@ -3,10 +3,10 @@ package pl.dietadvisor.common.productScraper.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dietadvisor.common.productScraper.enums.ProductSource;
-import pl.dietadvisor.common.productScraper.model.Product;
-import pl.dietadvisor.common.productScraper.model.ProductMigration;
-import pl.dietadvisor.common.productScraper.model.ProductScrapeJob;
-import pl.dietadvisor.common.productScraper.model.ProductScrapeLog;
+import pl.dietadvisor.common.productScraper.model.dynamodb.Product;
+import pl.dietadvisor.common.productScraper.model.dynamodb.ProductMigration;
+import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeJob;
+import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeLog;
 import pl.dietadvisor.common.shared.exception.custom.BadRequestException;
 
 import java.util.ArrayList;

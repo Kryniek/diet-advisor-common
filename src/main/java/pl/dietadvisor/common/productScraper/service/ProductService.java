@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import pl.dietadvisor.common.productScraper.model.Product;
+import pl.dietadvisor.common.productScraper.model.dynamodb.Product;
 import pl.dietadvisor.common.productScraper.repository.dynamodb.ProductRepository;
 
 import java.util.List;

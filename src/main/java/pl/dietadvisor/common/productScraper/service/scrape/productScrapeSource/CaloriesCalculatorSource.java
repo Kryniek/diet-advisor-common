@@ -1,4 +1,4 @@
-package pl.dietadvisor.common.productScraper.service.productScrapeSource;
+package pl.dietadvisor.common.productScraper.service.scrape.productScrapeSource;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -6,11 +6,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.stereotype.Service;
-import pl.dietadvisor.common.productScraper.definition.ProductScrapeSource;
+import pl.dietadvisor.common.productScraper.definition.scrape.ProductScrapeSource;
 import pl.dietadvisor.common.productScraper.enums.ProductScrapeJobSource;
-import pl.dietadvisor.common.productScraper.model.ProductScrapeJob;
-import pl.dietadvisor.common.productScraper.model.ProductScrapeLog;
-import pl.dietadvisor.common.productScraper.service.WebDriverService;
+import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeJob;
+import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeLog;
+import pl.dietadvisor.common.productScraper.service.scrape.WebDriverService;
 import pl.dietadvisor.common.productScraper.service.redis.ProductScrapeJobCancelRedisService;
 
 import java.math.BigDecimal;

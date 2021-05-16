@@ -1,4 +1,4 @@
-package pl.dietadvisor.common.productScraper.model;
+package pl.dietadvisor.common.productScraper.model.dynamodb;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

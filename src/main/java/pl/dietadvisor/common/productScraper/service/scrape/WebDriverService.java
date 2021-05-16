@@ -1,4 +1,4 @@
-package pl.dietadvisor.common.productScraper.service;
+package pl.dietadvisor.common.productScraper.service.scrape;
 
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;

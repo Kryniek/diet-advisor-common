@@ -2,7 +2,7 @@ package pl.dietadvisor.common.productScraper.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.dietadvisor.common.productScraper.model.ProductScrapeLog;
+import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeLog;
 import pl.dietadvisor.common.productScraper.repository.dynamodb.ProductScrapeLogRepository;
 
 import java.util.List;

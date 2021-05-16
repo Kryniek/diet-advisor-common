@@ -1,12 +1,13 @@
-package pl.dietadvisor.common.productScraper.controller;
+package pl.dietadvisor.common.api.controller;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dietadvisor.common.productScraper.model.ProductScrapeJob;
+import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeJob;
 import pl.dietadvisor.common.productScraper.model.redis.ProductScrapeJobCancel;
+import pl.dietadvisor.common.api.producer.ProductScrapeJobProducer;
 import pl.dietadvisor.common.productScraper.service.ProductScrapeJobService;
 import pl.dietadvisor.common.productScraper.service.redis.ProductScrapeJobCancelRedisService;
 
@@ -21,6 +22,7 @@ import static java.util.Objects.requireNonNull;
 public class ProductScrapeJobController {
     private final ProductScrapeJobService service;
     private final ProductScrapeJobCancelRedisService productScrapeJobCancelRedisService;
+    private final ProductScrapeJobProducer productScrapeJobProducer;
 
     @GetMapping
     public ResponseEntity<List<ProductScrapeJob>> get() {
@@ -36,7 +38,10 @@ public class ProductScrapeJobController {
     public ResponseEntity<ProductScrapeJob> create(@RequestBody @NonNull ProductScrapeJob productScrapeJob) {
         requireNonNull(productScrapeJob.getSource(), "Source must be set.");
 
-        return new ResponseEntity<>(service.create(productScrapeJob), HttpStatus.CREATED);
+        ProductScrapeJob createdProductScrapeJob = service.create(productScrapeJob);
+        productScrapeJobProducer.send(createdProductScrapeJob);
+
+        return new ResponseEntity<>(createdProductScrapeJob, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}/cancel")

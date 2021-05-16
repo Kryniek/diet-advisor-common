@@ -1,4 +1,4 @@
-package pl.dietadvisor.common.productScraper.controller;
+package pl.dietadvisor.common.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.dietadvisor.common.productScraper.model.ProductScrapeLog;
+import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeLog;
 import pl.dietadvisor.common.productScraper.service.ProductScrapeLogService;
 
 import javax.validation.constraints.NotBlank;

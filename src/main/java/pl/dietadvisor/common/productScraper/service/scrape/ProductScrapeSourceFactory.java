@@ -1,8 +1,8 @@
-package pl.dietadvisor.common.productScraper.service;
+package pl.dietadvisor.common.productScraper.service.scrape;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.dietadvisor.common.productScraper.definition.ProductScrapeSource;
+import pl.dietadvisor.common.productScraper.definition.scrape.ProductScrapeSource;
 import pl.dietadvisor.common.productScraper.enums.ProductScrapeJobSource;
 
 import java.util.List;

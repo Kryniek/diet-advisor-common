@@ -1,11 +1,11 @@
-package pl.dietadvisor.common.productScraper.controller;
+package pl.dietadvisor.common.api.controller;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dietadvisor.common.productScraper.model.Product;
-import pl.dietadvisor.common.productScraper.model.ProductMigration;
+import pl.dietadvisor.common.productScraper.model.dynamodb.Product;
+import pl.dietadvisor.common.productScraper.model.dynamodb.ProductMigration;
 import pl.dietadvisor.common.productScraper.service.ProductMigrationService;
 import pl.dietadvisor.common.shared.exception.custom.BadRequestException;
 

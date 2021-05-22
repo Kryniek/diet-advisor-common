@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.dietadvisor.common.productScraper.model.dynamodb.Product;
 import pl.dietadvisor.common.productScraper.repository.dynamodb.ProductRepository;
+import pl.dietadvisor.common.shared.exception.custom.BadRequestException;
 
 import java.util.List;
 
@@ -29,10 +30,23 @@ public class ProductService {
     }
 
     public Product create(Product product) {
-        product.setId(null);
-        product.setCreatedAt(now());
+        if (nonNull(getByName(product.getName()))) {
+            throw new BadRequestException("Product: %s already exist.", product.getName());
+        }
 
-        return repository.save(product);
+        return repository.save(Product.builder()
+                .source(USER)
+                .name(product.getName())
+                .kcal(product.getKcal())
+                .proteins(product.getProteins())
+                .carbohydrates(product.getCarbohydrates())
+                .fats(product.getFats())
+                .createdAt(now())
+                .build());
+    }
+
+    private Product getByName(String name) {
+        return repository.findByName(name);
     }
 
     public List<Product> create(List<Product> products) {

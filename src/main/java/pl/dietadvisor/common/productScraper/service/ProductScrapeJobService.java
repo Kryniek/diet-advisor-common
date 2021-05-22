@@ -25,10 +25,10 @@ public class ProductScrapeJobService {
         return repository.findById(id).orElseThrow();
     }
 
-    public ProductScrapeJob create(ProductScrapeJob requestProductScrapeJob) {
+    public ProductScrapeJob create(ProductScrapeJob productScrapeJob) {
         return repository.save(ProductScrapeJob.builder()
                 .state(CREATED)
-                .source(requestProductScrapeJob.getSource())
+                .source(productScrapeJob.getSource())
                 .createdAt(now())
                 .build());
     }

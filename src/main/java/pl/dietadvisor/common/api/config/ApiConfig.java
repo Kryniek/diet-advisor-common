@@ -10,15 +10,28 @@ import static org.springframework.context.annotation.FilterType.ASPECTJ;
 
 @Configuration
 @ComponentScan(basePackages = {
+        "pl.dietadvisor.common.api",
         "pl.dietadvisor.common.productScraper.enums",
         "pl.dietadvisor.common.productScraper.model",
         "pl.dietadvisor.common.productScraper.service",
         "pl.dietadvisor.common.productScraper.util",
-        "pl.dietadvisor.common.api"
+        "pl.dietadvisor.common.recipeScraper.enums",
+        "pl.dietadvisor.common.recipeScraper.model",
+        "pl.dietadvisor.common.recipeScraper.service",
+        "pl.dietadvisor.common.recipeScraper.util"
 }, excludeFilters = {
-        @Filter(type = ASPECTJ, pattern = "pl.dietadvisor.common.productScraper.service.scrape")
+        @Filter(type = ASPECTJ, pattern = {
+                "pl.dietadvisor.common.productScraper.service.scrape",
+                "pl.dietadvisor.common.recipeScraper.service.scrape"
+        })
 })
-@EnableDynamoDBRepositories(basePackages = "pl.dietadvisor.common.productScraper.repository.dynamodb")
-@EnableRedisRepositories(basePackages = "pl.dietadvisor.common.productScraper.repository.redis")
+@EnableDynamoDBRepositories(basePackages = {
+        "pl.dietadvisor.common.productScraper.repository.dynamodb",
+        "pl.dietadvisor.common.recipeScraper.repository.dynamodb"
+})
+@EnableRedisRepositories(basePackages = {
+        "pl.dietadvisor.common.productScraper.repository.redis",
+        "pl.dietadvisor.common.recipeScraper.repository.redis"
+})
 public class ApiConfig {
 }

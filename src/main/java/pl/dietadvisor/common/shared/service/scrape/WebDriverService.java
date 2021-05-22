@@ -1,4 +1,4 @@
-package pl.dietadvisor.common.productScraper.service.scrape;
+package pl.dietadvisor.common.shared.service.scrape;
 
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
@@ -12,6 +12,7 @@ import pl.dietadvisor.common.shared.config.properties.selenium.SeleniumPropertie
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.List;
 
 import static org.openqa.selenium.support.ui.Sleeper.SYSTEM_SLEEPER;
 
@@ -21,7 +22,12 @@ public class WebDriverService {
     private final SeleniumProperties seleniumProperties;
 
     public RemoteWebDriver create(String url) throws MalformedURLException {
-        RemoteWebDriver webDriver = new RemoteWebDriver(new URL(seleniumProperties.getHost()), new MutableCapabilities(new ChromeOptions()));
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments(List.of(
+                "--no-sandbox",
+                "--disable-dev-shm-usage"));
+
+        RemoteWebDriver webDriver = new RemoteWebDriver(new URL(seleniumProperties.getHost()), new MutableCapabilities(chromeOptions));
         webDriver.navigate().to(url);
         webDriver.manage().window().maximize();
 

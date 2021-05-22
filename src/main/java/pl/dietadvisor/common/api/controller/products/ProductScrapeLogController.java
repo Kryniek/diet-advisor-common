@@ -1,4 +1,4 @@
-package pl.dietadvisor.common.api.controller;
+package pl.dietadvisor.common.api.controller.products;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

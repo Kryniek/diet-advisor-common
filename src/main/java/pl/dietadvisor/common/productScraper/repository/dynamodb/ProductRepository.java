@@ -11,4 +11,6 @@ import java.util.List;
 @EnableScan
 public interface ProductRepository extends CrudRepository<Product, String> {
     List<Product> findByNameIn(List<String> names);
+
+    Product findByName(String name);
 }

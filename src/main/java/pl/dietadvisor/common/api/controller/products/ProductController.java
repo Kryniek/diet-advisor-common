@@ -1,4 +1,4 @@
-package pl.dietadvisor.common.api.controller;
+package pl.dietadvisor.common.api.controller.products;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,5 +34,16 @@ public class ProductController {
         requireNonNull(product.getId(), "Id must be set.");
 
         return ResponseEntity.ok(service.update(product));
+    }
+
+    @PostMapping
+    public ResponseEntity<Product> create(@RequestBody @NonNull Product product) {
+        requireNonNull(product.getName(), "Name must be set.");
+        requireNonNull(product.getKcal(), "Kcal must be set.");
+        requireNonNull(product.getProteins(), "Proteins must be set.");
+        requireNonNull(product.getCarbohydrates(), "Carbohydrates must be set.");
+        requireNonNull(product.getFats(), "Fats must be set.");
+
+        return new ResponseEntity<>(service.create(product), CREATED);
     }
 }

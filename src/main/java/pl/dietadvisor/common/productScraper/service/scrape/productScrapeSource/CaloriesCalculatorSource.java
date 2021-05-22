@@ -10,7 +10,7 @@ import pl.dietadvisor.common.productScraper.definition.scrape.ProductScrapeSourc
 import pl.dietadvisor.common.productScraper.enums.ProductScrapeJobSource;
 import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeJob;
 import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeLog;
-import pl.dietadvisor.common.productScraper.service.scrape.WebDriverService;
+import pl.dietadvisor.common.shared.service.scrape.WebDriverService;
 import pl.dietadvisor.common.productScraper.service.redis.ProductScrapeJobCancelRedisService;
 
 import java.math.BigDecimal;

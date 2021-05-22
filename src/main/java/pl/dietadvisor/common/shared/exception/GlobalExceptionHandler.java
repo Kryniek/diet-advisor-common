@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import pl.dietadvisor.common.shared.exception.custom.BadRequestException;
+import pl.dietadvisor.common.shared.exception.custom.NotFoundException;
 
 import java.util.NoSuchElementException;
 
@@ -14,8 +15,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Object> noSuchElementException(NoSuchElementException exception, WebRequest request) {
+    @ExceptionHandler({
+            NoSuchElementException.class,
+            NotFoundException.class
+    })
+    public ResponseEntity<Object> noSuchElementException(Exception exception, WebRequest request) {
         return new ResponseEntity<>(exception.getMessage(), NOT_FOUND);
     }
 

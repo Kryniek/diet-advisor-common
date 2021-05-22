@@ -4,13 +4,12 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dietadvisor.common.product.model.dynamodb.Product;
-import pl.dietadvisor.common.product.model.dynamodb.ProductMigration;
+import pl.dietadvisor.common.product.model.ProductMigration;
+import pl.dietadvisor.common.product.model.ProductMigrationResult;
 import pl.dietadvisor.common.product.service.ProductMigrationService;
 import pl.dietadvisor.common.shared.exception.custom.BadRequestException;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -28,7 +27,7 @@ public class ProductMigrationController {
     }
 
     @PostMapping
-    public ResponseEntity<List<Product>> migrate(@RequestBody @NonNull ProductMigration productMigration) {
+    public ResponseEntity<ProductMigrationResult> migrate(@RequestBody @NonNull ProductMigration productMigration) {
         validateMigrationRequestData(productMigration);
 
         return new ResponseEntity<>(service.migrate(productMigration), CREATED);

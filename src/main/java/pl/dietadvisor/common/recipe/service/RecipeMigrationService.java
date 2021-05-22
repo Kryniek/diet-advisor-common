@@ -3,6 +3,8 @@ package pl.dietadvisor.common.recipe.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dietadvisor.common.recipe.enums.RecipeSource;
+import pl.dietadvisor.common.recipe.model.RecipeMigration;
+import pl.dietadvisor.common.recipe.model.RecipeMigrationResult;
 import pl.dietadvisor.common.recipe.model.dynamodb.*;
 import pl.dietadvisor.common.shared.exception.custom.BadRequestException;
 

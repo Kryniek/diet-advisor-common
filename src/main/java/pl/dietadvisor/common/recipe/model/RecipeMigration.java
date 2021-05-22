@@ -1,9 +1,11 @@
-package pl.dietadvisor.common.recipe.model.dynamodb;
+package pl.dietadvisor.common.recipe.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeJob;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeLog;
 
 import java.util.List;
 

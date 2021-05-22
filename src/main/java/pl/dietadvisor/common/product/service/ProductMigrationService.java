@@ -3,15 +3,19 @@ package pl.dietadvisor.common.product.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.dietadvisor.common.product.enums.ProductSource;
+import pl.dietadvisor.common.product.model.ProductMigration;
+import pl.dietadvisor.common.product.model.ProductMigrationResult;
 import pl.dietadvisor.common.product.model.dynamodb.Product;
-import pl.dietadvisor.common.product.model.dynamodb.ProductMigration;
 import pl.dietadvisor.common.product.model.dynamodb.ProductScrapeJob;
 import pl.dietadvisor.common.product.model.dynamodb.ProductScrapeLog;
 import pl.dietadvisor.common.shared.exception.custom.BadRequestException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static pl.dietadvisor.common.product.enums.ProductScrapeJobState.FINISHED;
@@ -25,7 +29,8 @@ public class ProductMigrationService {
     private final ProductService productService;
 
     public ProductMigration getById(String jobId) {
-        List<ProductScrapeLog> logs = productScrapeLogService.getByJobId(jobId);
+        List<ProductScrapeLog> logsWithDuplicates = productScrapeLogService.getByJobId(jobId);
+        List<ProductScrapeLog> logs = getLogsWithoutDuplicates(logsWithDuplicates);
         List<Product> existingProducts = productService.getByNames(logs.stream()
                 .map(ProductScrapeLog::getName)
                 .collect(toList()));
@@ -50,28 +55,31 @@ public class ProductMigrationService {
                 .build();
     }
 
-    public List<Product> migrate(ProductMigration productMigration) {
+    public ProductMigrationResult migrate(ProductMigration productMigration) {
+        ProductMigrationResult migrationResult = new ProductMigrationResult();
         ProductScrapeJob job = productScrapeJobService.getById(productMigration.getJob().getId());
         validateIfJobCanBeMigrated(job);
 
-        List<ProductScrapeLog> logs = getMigrationLogs(productMigration);
-        validateIfProductsIntendedToMigrationNotExists(logs);
+        List<ProductScrapeLog> logs = getLogsWithoutDuplicates(getMigrationLogs(productMigration));
+        validateIfProductsIntendedToMigrationNotExists(migrationResult, logs);
 
-        List<Product> createdProducts = productService.create(logs.stream()
-                .map(log -> Product.builder()
-                        .source(ProductSource.parse(job.getSource().name()))
-                        .name(log.getName())
-                        .kcal(log.getKcal())
-                        .proteins(log.getProteins())
-                        .carbohydrates(log.getCarbohydrates())
-                        .fats(log.getFats())
-                        .build())
-                .collect(toList()));
+        migrationResult.setMigratedProducts(
+                productService.create(
+                        logs.stream()
+                                .map(log -> Product.builder()
+                                        .source(ProductSource.parse(job.getSource().name()))
+                                        .name(log.getName())
+                                        .kcal(log.getKcal())
+                                        .proteins(log.getProteins())
+                                        .carbohydrates(log.getCarbohydrates())
+                                        .fats(log.getFats())
+                                        .build())
+                                .collect(toList())));
 
         job.setState(MIGRATED);
         productScrapeJobService.update(job);
 
-        return createdProducts;
+        return migrationResult;
     }
 
     private void validateIfJobCanBeMigrated(ProductScrapeJob job) {
@@ -91,12 +99,34 @@ public class ProductMigrationService {
         return productScrapeLogService.getByIds(productMigration.getMigrationLogsIds());
     }
 
-    private void validateIfProductsIntendedToMigrationNotExists(List<ProductScrapeLog> logs) {
-        List<Product> existingProducts = productService.getByNames(logs.stream().map(ProductScrapeLog::getName).collect(toList()));
+    private List<ProductScrapeLog> getLogsWithoutDuplicates(List<ProductScrapeLog> productScrapeLogs) {
+        Map<String, List<ProductScrapeLog>> namesToCollectionsOfLogs = productScrapeLogs.stream()
+                .collect(groupingBy(ProductScrapeLog::getName));
+
+        List<String> duplicatedIds = new ArrayList<>();
+        namesToCollectionsOfLogs.forEach((name, logs) -> {
+            if (logs.size() > 1) {
+                IntStream.range(1, logs.size())
+                        .forEach(index ->
+                                duplicatedIds.add(logs.get(index).getId()));
+            }
+        });
+
+        return productScrapeLogs.stream()
+                .filter(log -> !duplicatedIds.contains(log.getId()))
+                .collect(toList());
+    }
+
+    private void validateIfProductsIntendedToMigrationNotExists(ProductMigrationResult migrationResult, List<ProductScrapeLog> logs) {
+        List<Product> existingProducts = productService.getByNames(
+                logs.stream()
+                        .map(ProductScrapeLog::getName)
+                        .collect(toList()));
         if (!isEmpty(existingProducts)) {
-            throw new BadRequestException("Products: %s already exists.", existingProducts.stream()
-                    .map(Product::getName)
-                    .collect(toList()));
+            migrationResult.setAlreadyExistingProducts(existingProducts);
+            logs.removeIf(log ->
+                    existingProducts.stream()
+                            .anyMatch(product -> product.getName().equals(log.getName())));
         }
     }
 }

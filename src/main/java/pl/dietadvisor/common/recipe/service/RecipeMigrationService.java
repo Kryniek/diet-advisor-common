@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import pl.dietadvisor.common.recipe.enums.RecipeSource;
 import pl.dietadvisor.common.recipe.model.RecipeMigration;
 import pl.dietadvisor.common.recipe.model.RecipeMigrationResult;
-import pl.dietadvisor.common.recipe.model.dynamodb.*;
+import pl.dietadvisor.common.recipe.model.dynamodb.Recipe;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeJob;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeLog;
 import pl.dietadvisor.common.shared.exception.custom.BadRequestException;
 
 import java.util.ArrayList;
@@ -74,6 +76,7 @@ public class RecipeMigrationService {
                                 .collect(toList())));
 
         job.setState(MIGRATED);
+        job.setMigratedRecipesNumber(migrationResult.getMigratedRecipes().size());
         recipeScrapeJobService.update(job);
 
         return migrationResult;

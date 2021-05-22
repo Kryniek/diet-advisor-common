@@ -31,6 +31,7 @@ public class RecipeScrapeJob {
     private RecipeScrapeJobSource source;
     private String errorMessage;
     private Integer scrapedRecipesNumber;
+    private Integer migratedRecipesNumber;
     @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)
     private LocalDateTime createdAt;
     @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)

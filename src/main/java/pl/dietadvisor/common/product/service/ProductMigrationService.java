@@ -77,6 +77,7 @@ public class ProductMigrationService {
                                 .collect(toList())));
 
         job.setState(MIGRATED);
+        job.setMigratedProductsNumber(migrationResult.getMigratedProducts().size());
         productScrapeJobService.update(job);
 
         return migrationResult;

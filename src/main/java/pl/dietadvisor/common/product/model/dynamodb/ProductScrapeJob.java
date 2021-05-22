@@ -10,9 +10,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.dietadvisor.common.product.enums.ProductScrapeJobSource;
 import pl.dietadvisor.common.product.enums.ProductScrapeJobState;
-import pl.dietadvisor.common.shared.util.converter.dynamodb.LocalDateTimeConverter;
 import pl.dietadvisor.common.product.util.converter.dynamodb.ProductScrapeJobSourceConverter;
 import pl.dietadvisor.common.product.util.converter.dynamodb.ProductScrapeJobStateConverter;
+import pl.dietadvisor.common.shared.util.converter.dynamodb.LocalDateTimeConverter;
 
 import java.time.LocalDateTime;
 
@@ -31,6 +31,7 @@ public class ProductScrapeJob {
     private ProductScrapeJobSource source;
     private String errorMessage;
     private Integer scrapedProductsNumber;
+    private Integer migratedProductsNumber;
     @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)
     private LocalDateTime createdAt;
     @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)

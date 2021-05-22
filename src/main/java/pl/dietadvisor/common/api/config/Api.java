@@ -1,6 +1,8 @@
 package pl.dietadvisor.common.api.config;
 
 import org.springframework.context.annotation.Import;
+import pl.dietadvisor.common.product.config.ProductConfig;
+import pl.dietadvisor.common.recipe.config.RecipeConfig;
 import pl.dietadvisor.common.shared.config.ApplicationConfig;
 
 import java.lang.annotation.*;
@@ -11,7 +13,9 @@ import java.lang.annotation.*;
 @Inherited
 @Import({
         ApiConfig.class,
-        ApplicationConfig.class
+        ApplicationConfig.class,
+        ProductConfig.class,
+        RecipeConfig.class
 })
 public @interface Api {
 }

@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.dietadvisor.common.api.producer.RecipeScrapeJobProducer;
-import pl.dietadvisor.common.recipeScraper.model.dynamodb.RecipeScrapeJob;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeJob;
 import pl.dietadvisor.common.recipeScraper.model.redis.RecipeScrapeJobCancel;
-import pl.dietadvisor.common.recipeScraper.service.RecipeScrapeJobService;
+import pl.dietadvisor.common.recipe.service.RecipeScrapeJobService;
 import pl.dietadvisor.common.recipeScraper.service.redis.RecipeScrapeJobCancelRedisService;
 
 import javax.validation.constraints.NotBlank;

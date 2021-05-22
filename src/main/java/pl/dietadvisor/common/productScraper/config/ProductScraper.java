@@ -1,6 +1,7 @@
 package pl.dietadvisor.common.productScraper.config;
 
 import org.springframework.context.annotation.Import;
+import pl.dietadvisor.common.product.config.ProductConfig;
 import pl.dietadvisor.common.shared.config.ApplicationConfig;
 
 import java.lang.annotation.*;
@@ -11,7 +12,8 @@ import java.lang.annotation.*;
 @Inherited
 @Import({
         ApplicationConfig.class,
-        ProductScraperConfig.class
+        ProductScraperConfig.class,
+        ProductConfig.class
 })
 public @interface ProductScraper {
 }

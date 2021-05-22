@@ -4,8 +4,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dietadvisor.common.recipeScraper.model.dynamodb.Recipe;
-import pl.dietadvisor.common.recipeScraper.service.RecipeService;
+import pl.dietadvisor.common.recipe.model.dynamodb.Recipe;
+import pl.dietadvisor.common.recipe.service.RecipeService;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;

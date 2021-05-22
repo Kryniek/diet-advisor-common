@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.dietadvisor.common.recipeScraper.model.dynamodb.RecipeScrapeLog;
-import pl.dietadvisor.common.recipeScraper.service.RecipeScrapeLogService;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeLog;
+import pl.dietadvisor.common.recipe.service.RecipeScrapeLogService;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;

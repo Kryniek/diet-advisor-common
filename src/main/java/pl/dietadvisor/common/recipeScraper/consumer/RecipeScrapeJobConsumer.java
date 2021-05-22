@@ -5,10 +5,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import pl.dietadvisor.common.recipeScraper.definition.scrape.RecipeScrapeSource;
-import pl.dietadvisor.common.recipeScraper.model.dynamodb.RecipeScrapeJob;
-import pl.dietadvisor.common.recipeScraper.model.dynamodb.RecipeScrapeLog;
-import pl.dietadvisor.common.recipeScraper.service.RecipeScrapeJobService;
-import pl.dietadvisor.common.recipeScraper.service.RecipeScrapeLogService;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeJob;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeLog;
+import pl.dietadvisor.common.recipe.service.RecipeScrapeJobService;
+import pl.dietadvisor.common.recipe.service.RecipeScrapeLogService;
 import pl.dietadvisor.common.recipeScraper.service.scrape.RecipeScrapeSourceFactory;
 import pl.dietadvisor.common.shared.util.aop.KafkaConsumerLog;
 
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static pl.dietadvisor.common.recipeScraper.enums.RecipeScrapeJobState.*;
+import static pl.dietadvisor.common.recipe.enums.RecipeScrapeJobState.*;
 
 @Component
 @RequiredArgsConstructor

@@ -11,6 +11,6 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
         "pl.dietadvisor.common.shared.service.scrape"
 })
 @EnableRedisRepositories(basePackages = "pl.dietadvisor.common.productScraper.repository.redis")
-@EnableDynamoDBRepositories(basePackages = "pl.dietadvisor.common.productScraper.repository.dynamodb")
+@EnableDynamoDBRepositories(basePackages = "pl.dietadvisor.common.product.repository.dynamodb")
 public class ProductScraperConfig {
 }

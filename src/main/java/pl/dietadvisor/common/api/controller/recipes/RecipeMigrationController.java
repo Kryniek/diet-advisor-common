@@ -4,9 +4,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dietadvisor.common.recipeScraper.model.dynamodb.RecipeMigration;
-import pl.dietadvisor.common.recipeScraper.model.dynamodb.RecipeMigrationResult;
-import pl.dietadvisor.common.recipeScraper.service.RecipeMigrationService;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeMigration;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeMigrationResult;
+import pl.dietadvisor.common.recipe.service.RecipeMigrationService;
 import pl.dietadvisor.common.shared.exception.custom.BadRequestException;
 
 import javax.validation.constraints.NotBlank;

@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeJob;
+import pl.dietadvisor.common.product.model.dynamodb.ProductScrapeJob;
 import pl.dietadvisor.common.productScraper.model.redis.ProductScrapeJobCancel;
 import pl.dietadvisor.common.api.producer.ProductScrapeJobProducer;
-import pl.dietadvisor.common.productScraper.service.ProductScrapeJobService;
+import pl.dietadvisor.common.product.service.ProductScrapeJobService;
 import pl.dietadvisor.common.productScraper.service.redis.ProductScrapeJobCancelRedisService;
 
 import javax.validation.constraints.NotBlank;

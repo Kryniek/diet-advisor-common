@@ -7,9 +7,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.stereotype.Service;
 import pl.dietadvisor.common.recipeScraper.definition.scrape.RecipeScrapeSource;
-import pl.dietadvisor.common.recipeScraper.enums.RecipeScrapeJobSource;
-import pl.dietadvisor.common.recipeScraper.model.dynamodb.RecipeScrapeJob;
-import pl.dietadvisor.common.recipeScraper.model.dynamodb.RecipeScrapeLog;
+import pl.dietadvisor.common.recipe.enums.RecipeScrapeJobSource;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeJob;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeLog;
 import pl.dietadvisor.common.recipeScraper.service.redis.RecipeScrapeJobCancelRedisService;
 import pl.dietadvisor.common.shared.config.properties.selenium.SeleniumProperties;
 import pl.dietadvisor.common.shared.service.scrape.WebDriverService;
@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.nonNull;
-import static pl.dietadvisor.common.recipeScraper.enums.RecipeScrapeJobSource.STRENGTH_FACTORY;
-import static pl.dietadvisor.common.recipeScraper.enums.RecipeScrapeJobState.CANCELLED;
-import static pl.dietadvisor.common.recipeScraper.enums.RecipeScrapeJobState.FAILED;
+import static pl.dietadvisor.common.recipe.enums.RecipeScrapeJobSource.STRENGTH_FACTORY;
+import static pl.dietadvisor.common.recipe.enums.RecipeScrapeJobState.CANCELLED;
+import static pl.dietadvisor.common.recipe.enums.RecipeScrapeJobState.FAILED;
 
 /*
  * To check new products macro and kcal: https://www.fabrykasily.pl/konto/dziennik/dietetyczny

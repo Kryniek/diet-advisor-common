@@ -7,9 +7,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.stereotype.Service;
 import pl.dietadvisor.common.productScraper.definition.scrape.ProductScrapeSource;
-import pl.dietadvisor.common.productScraper.enums.ProductScrapeJobSource;
-import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeJob;
-import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeLog;
+import pl.dietadvisor.common.product.enums.ProductScrapeJobSource;
+import pl.dietadvisor.common.product.model.dynamodb.ProductScrapeJob;
+import pl.dietadvisor.common.product.model.dynamodb.ProductScrapeLog;
 import pl.dietadvisor.common.shared.service.scrape.WebDriverService;
 import pl.dietadvisor.common.productScraper.service.redis.ProductScrapeJobCancelRedisService;
 
@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
-import static pl.dietadvisor.common.productScraper.enums.ProductScrapeJobSource.CALORIES_CALCULATOR;
-import static pl.dietadvisor.common.productScraper.enums.ProductScrapeJobState.CANCELLED;
-import static pl.dietadvisor.common.productScraper.enums.ProductScrapeJobState.FAILED;
+import static pl.dietadvisor.common.product.enums.ProductScrapeJobSource.CALORIES_CALCULATOR;
+import static pl.dietadvisor.common.product.enums.ProductScrapeJobState.CANCELLED;
+import static pl.dietadvisor.common.product.enums.ProductScrapeJobState.FAILED;
 
 @Service
 @RequiredArgsConstructor

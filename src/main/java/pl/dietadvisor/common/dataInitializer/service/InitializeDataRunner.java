@@ -8,12 +8,12 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
-import pl.dietadvisor.common.productScraper.model.dynamodb.Product;
-import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeJob;
-import pl.dietadvisor.common.productScraper.model.dynamodb.ProductScrapeLog;
-import pl.dietadvisor.common.productScraper.repository.dynamodb.ProductRepository;
-import pl.dietadvisor.common.productScraper.repository.dynamodb.ProductScrapeJobRepository;
-import pl.dietadvisor.common.productScraper.repository.dynamodb.ProductScrapeLogRepository;
+import pl.dietadvisor.common.product.model.dynamodb.Product;
+import pl.dietadvisor.common.product.model.dynamodb.ProductScrapeJob;
+import pl.dietadvisor.common.product.model.dynamodb.ProductScrapeLog;
+import pl.dietadvisor.common.product.repository.dynamodb.ProductRepository;
+import pl.dietadvisor.common.product.repository.dynamodb.ProductScrapeJobRepository;
+import pl.dietadvisor.common.product.repository.dynamodb.ProductScrapeLogRepository;
 
 import java.io.File;
 import java.io.IOException;

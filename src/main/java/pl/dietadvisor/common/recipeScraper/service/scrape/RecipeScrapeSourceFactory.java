@@ -3,7 +3,7 @@ package pl.dietadvisor.common.recipeScraper.service.scrape;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.dietadvisor.common.recipeScraper.definition.scrape.RecipeScrapeSource;
-import pl.dietadvisor.common.recipeScraper.enums.RecipeScrapeJobSource;
+import pl.dietadvisor.common.recipe.enums.RecipeScrapeJobSource;
 
 import java.util.List;
 

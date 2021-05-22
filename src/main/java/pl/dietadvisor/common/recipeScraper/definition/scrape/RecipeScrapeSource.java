@@ -1,8 +1,8 @@
 package pl.dietadvisor.common.recipeScraper.definition.scrape;
 
-import pl.dietadvisor.common.recipeScraper.enums.RecipeScrapeJobSource;
-import pl.dietadvisor.common.recipeScraper.model.dynamodb.RecipeScrapeJob;
-import pl.dietadvisor.common.recipeScraper.model.dynamodb.RecipeScrapeLog;
+import pl.dietadvisor.common.recipe.enums.RecipeScrapeJobSource;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeJob;
+import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeLog;
 
 import java.util.List;
 

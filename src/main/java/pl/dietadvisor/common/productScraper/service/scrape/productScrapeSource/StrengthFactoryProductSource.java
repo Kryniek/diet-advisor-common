@@ -3,6 +3,7 @@ package pl.dietadvisor.common.productScraper.service.scrape.productScrapeSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.stereotype.Service;
@@ -75,29 +76,6 @@ public class StrengthFactoryProductSource implements ProductScrapeSource {
 
                         fetchProducts(webDriver, query);
                         scrapeLogs(webDriver, scrapeLogs, productScrapeJob.getId(), query);
-                    }
-                }
-            }
-            for (char firstLetter = requestedFirstLetter; firstLetter <= requestedLastLetter; firstLetter++) {
-                for (char secondLetter = 'a'; secondLetter <= 'z'; secondLetter++) {
-                    for (char thirdLetter = 'a'; thirdLetter <= 'z'; thirdLetter++) {
-                        for (char fourthLetter = 'a'; fourthLetter <= 'z'; fourthLetter++) {
-                            for (char fifthLetter = 'a'; fifthLetter <= 'z'; fifthLetter++) {
-                                for (char sixthLetter = 'a'; sixthLetter <= 'z'; sixthLetter++) {
-                                    String query = String.valueOf(firstLetter) + secondLetter + thirdLetter + fourthLetter + fifthLetter + sixthLetter;
-                                    log.info("Scraping job: {} with query: {}. Sixth levels depth.", productScrapeJob.getId(), query);
-
-                                    if (productScrapeJobCancelRedisService.isCancelled(productScrapeJob.getId())) {
-                                        log.info("Job: {} has been canceled on query: {}. Sixth levels depth.", productScrapeJob.getId(), query);
-                                        productScrapeJob.setState(CANCELLED);
-                                        return scrapeLogs;
-                                    }
-
-                                    fetchProducts(webDriver, query);
-                                    scrapeLogs(webDriver, scrapeLogs, productScrapeJob.getId(), query);
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -228,37 +206,41 @@ public class StrengthFactoryProductSource implements ProductScrapeSource {
         }
 
         List<WebElement> myDataElements = webDriver.findElements(myDataElementsSelector);
-        myDataElements.forEach(element -> {
-            String name = element.findElement(By.cssSelector(".myName")).getText().trim();
-            String rawKcal = element.findElement(By.cssSelector(".myKcal")).getText().trim();
-            String rawProteins = element.findElement(By.cssSelector(".myProteins")).getText().trim();
-            String rawCarbohydrates = element.findElement(By.cssSelector(".myCarbohydrates")).getText().trim();
-            String rawFats = element.findElement(By.cssSelector(".myFats")).getText().trim();
+        try {
+            myDataElements.forEach(element -> {
+                String name = element.findElement(By.cssSelector(".myName")).getText().trim();
+                String rawKcal = element.findElement(By.cssSelector(".myKcal")).getText().trim();
+                String rawProteins = element.findElement(By.cssSelector(".myProteins")).getText().trim();
+                String rawCarbohydrates = element.findElement(By.cssSelector(".myCarbohydrates")).getText().trim();
+                String rawFats = element.findElement(By.cssSelector(".myFats")).getText().trim();
 
-            if (areAllFieldsNotEmpty(name, rawKcal, rawProteins, rawCarbohydrates, rawFats)) {
-                boolean isDuplicated = scrapeLogs
-                        .stream()
-                        .anyMatch(log -> log.getName().equals(name));
-                if (isDuplicated) {
-                    return;
+                if (areAllFieldsNotEmpty(name, rawKcal, rawProteins, rawCarbohydrates, rawFats)) {
+                    boolean isDuplicated = scrapeLogs
+                            .stream()
+                            .anyMatch(log -> log.getName().equals(name));
+                    if (isDuplicated) {
+                        return;
+                    }
+
+                    int kcal = new BigDecimal(rawKcal).multiply(new BigDecimal("100")).intValue();
+                    BigDecimal proteins = new BigDecimal(rawProteins).multiply(new BigDecimal("100"));
+                    BigDecimal carbohydrates = new BigDecimal(rawCarbohydrates).multiply(new BigDecimal("100"));
+                    BigDecimal fats = new BigDecimal(rawFats).multiply(new BigDecimal("100"));
+
+                    if (!areAllFieldsZeros(kcal, proteins, carbohydrates, fats)) {
+                        scrapeLogs.add(ProductScrapeLog.builder()
+                                .name(name)
+                                .kcal(kcal)
+                                .proteins(proteins)
+                                .carbohydrates(carbohydrates)
+                                .fats(fats)
+                                .build());
+                    }
                 }
-
-                int kcal = new BigDecimal(rawKcal).multiply(new BigDecimal("100")).intValue();
-                BigDecimal proteins = new BigDecimal(rawProteins).multiply(new BigDecimal("100"));
-                BigDecimal carbohydrates = new BigDecimal(rawCarbohydrates).multiply(new BigDecimal("100"));
-                BigDecimal fats = new BigDecimal(rawFats).multiply(new BigDecimal("100"));
-
-                if (!areAllFieldsZeros(kcal, proteins, carbohydrates, fats)) {
-                    scrapeLogs.add(ProductScrapeLog.builder()
-                            .name(name)
-                            .kcal(kcal)
-                            .proteins(proteins)
-                            .carbohydrates(carbohydrates)
-                            .fats(fats)
-                            .build());
-                }
-            }
-        });
+            });
+        } catch (StaleElementReferenceException exception) {
+            log.info("StaleElementReferenceException in job: {} with query: {}. Skipped.", productScrapeJobId, query);
+        }
     }
 
     private boolean areAllFieldsNotEmpty(String name, String kcal, String proteins, String carbohydrates, String fats) {

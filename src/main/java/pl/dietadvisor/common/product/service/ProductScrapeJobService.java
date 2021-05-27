@@ -45,6 +45,9 @@ public class ProductScrapeJobService {
         if (nonNull(productScrapeJob.getScrapedProductsNumber())) {
             existingProductScrapeJob.setScrapedProductsNumber(productScrapeJob.getScrapedProductsNumber());
         }
+        if (nonNull(productScrapeJob.getMigratedProductsNumber())) {
+            existingProductScrapeJob.setMigratedProductsNumber(productScrapeJob.getMigratedProductsNumber());
+        }
 
         existingProductScrapeJob.setUpdatedAt(now());
 

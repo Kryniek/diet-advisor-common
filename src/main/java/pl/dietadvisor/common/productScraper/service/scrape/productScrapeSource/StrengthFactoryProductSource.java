@@ -69,7 +69,7 @@ public class StrengthFactoryProductSource implements ProductScrapeSource {
                         log.info("Scraping job: {} with query: {}. Three levels depth.", productScrapeJob.getId(), query);
 
                         if (productScrapeJobCancelRedisService.isCancelled(productScrapeJob.getId())) {
-                            log.info("Job: {} has been canceled on query: {}. Three levels depth.", productScrapeJob.getId(), query);
+                            log.info("Job: {} has been canceled on query: {}", productScrapeJob.getId(), query);
                             productScrapeJob.setState(CANCELLED);
                             return scrapeLogs;
                         }

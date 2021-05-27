@@ -29,6 +29,7 @@ public class ProductScrapeJobService {
         return repository.save(ProductScrapeJob.builder()
                 .state(CREATED)
                 .source(productScrapeJob.getSource())
+                .additionalFields(productScrapeJob.getAdditionalFields())
                 .createdAt(now())
                 .build());
     }

@@ -44,6 +44,16 @@ public class WebDriverService {
         return true;
     }
 
+    public boolean areElementsExists(RemoteWebDriver webDriver, By selector) {
+        try {
+            webDriver.findElements(selector);
+        } catch (NoSuchElementException exception) {
+            return false;
+        }
+
+        return true;
+    }
+
     public void sleep(Integer seconds) throws InterruptedException {
         SYSTEM_SLEEPER.sleep(Duration.ofSeconds(seconds));
     }

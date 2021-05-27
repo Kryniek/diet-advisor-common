@@ -4,7 +4,7 @@ import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
 public enum ProductSource {
-    CALORIES_CALCULATOR, USER;
+    CALORIES_CALCULATOR, STRENGTH_FACTORY, USER;
 
     public static ProductSource parse(String rawState) {
         if (isNull(rawState)) {

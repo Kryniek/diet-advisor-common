@@ -4,7 +4,7 @@ import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
 public enum ProductScrapeJobSource {
-    CALORIES_CALCULATOR;
+    CALORIES_CALCULATOR, STRENGTH_FACTORY;
 
     public static ProductScrapeJobSource parse(String rawState) {
         if (isNull(rawState)) {

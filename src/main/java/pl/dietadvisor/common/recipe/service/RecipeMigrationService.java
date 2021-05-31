@@ -70,6 +70,7 @@ public class RecipeMigrationService {
                                         .source(RecipeSource.parse(job.getSource().name()))
                                         .mealNumbers(log.getMealNumbers())
                                         .name(log.getName())
+                                        .imageName(log.getImageName())
                                         .productsNamesToQuantities(log.getProductsNamesToQuantities())
                                         .recipe(log.getRecipe())
                                         .build())

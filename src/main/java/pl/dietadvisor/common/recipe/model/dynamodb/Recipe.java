@@ -34,7 +34,7 @@ public class Recipe {
     private BigDecimal proteins;
     private BigDecimal carbohydrates;
     private BigDecimal fats;
-    //TODO: adres fotki do s3 lub lokalnie do foleru
+    private String imageName;
     private Map<String, BigDecimal> productsNamesToQuantities;
     private String recipe;
     @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)

@@ -27,7 +27,7 @@ public class RecipeScrapeLog {
     private String jobId;
     private List<Integer> mealNumbers;
     private String name;
-    //TODO: adres fotki do s3 lub lokalnie do foleru
+    private String imageName;
     private Map<String, BigDecimal> productsNamesToQuantities;
     private String recipe;
     @DynamoDBTypeConverted(converter = LocalDateTimeConverter.class)

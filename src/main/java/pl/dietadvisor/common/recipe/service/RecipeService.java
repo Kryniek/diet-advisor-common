@@ -9,12 +9,15 @@ import pl.dietadvisor.common.recipe.repository.dynamodb.RecipeRepository;
 import pl.dietadvisor.common.shared.exception.custom.NotFoundException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import static java.math.MathContext.DECIMAL32;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -59,7 +62,7 @@ public class RecipeService {
         BigDecimal fats = BigDecimal.ZERO;
 
         Map<String, BigDecimal> productsNamesToQuantities = recipe.getProductsNamesToQuantities();
-        List<Product> products = productService.getByNames(List.copyOf(productsNamesToQuantities.keySet()));
+        List<Product> products = getProductsWithoutDuplicates(productService.getByNames(List.copyOf(productsNamesToQuantities.keySet())));
         validateIfAllRecipeProductsExists(recipe, productsNamesToQuantities, products);
 
         for (Product product : products) {
@@ -76,6 +79,24 @@ public class RecipeService {
         recipe.setFats(fats);
     }
 
+    private List<Product> getProductsWithoutDuplicates(List<Product> productsWithDuplicates) {
+        Map<String, List<Product>> namesToCollectionsOfProducts = productsWithDuplicates.stream()
+                .collect(groupingBy(Product::getName));
+
+        List<String> duplicatedIds = new ArrayList<>();
+        namesToCollectionsOfProducts.forEach((name, products) -> {
+            if (products.size() > 1) {
+                IntStream.range(1, products.size())
+                        .forEach(index ->
+                                duplicatedIds.add(products.get(index).getId()));
+            }
+        });
+
+        return productsWithDuplicates.stream()
+                .filter(log -> !duplicatedIds.contains(log.getId()))
+                .collect(toList());
+    }
+
     private void validateIfAllRecipeProductsExists(Recipe recipe, Map<String, BigDecimal> productsNamesToQuantities, List<Product> products) {
         if (products.size() != productsNamesToQuantities.size()) {
             List<String> productsNames = products.stream()
@@ -86,7 +107,7 @@ public class RecipeService {
                     .filter(productName -> !productsNames.contains(productName))
                     .collect(toList());
 
-            throw new NotFoundException("Not found products: %s, for recipe: %s", notExistingProductsNames, recipe.getName());
+            throw new NotFoundException("Not found products: %s, for recipe: %s\nSee: %s for product details.", notExistingProductsNames, recipe.getName(), "https://www.fabrykasily.pl/konto/dziennik/dietetyczny");
         }
     }
 

@@ -11,4 +11,5 @@ public class AwsProperties {
     private UserCredentialsProperties userCredentials;
     private String region;
     private String url;
+    private String recipesImagesAddress;
 }

@@ -44,6 +44,9 @@ public class RecipeScrapeJobService {
         if (nonNull(recipeScrapeJob.getScrapedRecipesNumber())) {
             existingRecipeScrapeJob.setScrapedRecipesNumber(recipeScrapeJob.getScrapedRecipesNumber());
         }
+        if (nonNull(recipeScrapeJob.getMigratedRecipesNumber())) {
+            existingRecipeScrapeJob.setMigratedRecipesNumber(recipeScrapeJob.getMigratedRecipesNumber());
+        }
 
         existingRecipeScrapeJob.setUpdatedAt(now());
 

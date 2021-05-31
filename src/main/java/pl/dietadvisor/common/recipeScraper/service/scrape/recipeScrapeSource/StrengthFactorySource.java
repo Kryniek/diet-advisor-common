@@ -6,21 +6,25 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.stereotype.Service;
-import pl.dietadvisor.common.recipeScraper.definition.scrape.RecipeScrapeSource;
 import pl.dietadvisor.common.recipe.enums.RecipeScrapeJobSource;
 import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeJob;
 import pl.dietadvisor.common.recipe.model.dynamodb.RecipeScrapeLog;
+import pl.dietadvisor.common.recipeScraper.definition.scrape.RecipeScrapeSource;
 import pl.dietadvisor.common.recipeScraper.service.redis.RecipeScrapeJobCancelRedisService;
+import pl.dietadvisor.common.shared.config.properties.aws.AwsProperties;
 import pl.dietadvisor.common.shared.config.properties.selenium.SeleniumProperties;
 import pl.dietadvisor.common.shared.service.scrape.WebDriverService;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
+import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static pl.dietadvisor.common.recipe.enums.RecipeScrapeJobSource.STRENGTH_FACTORY;
 import static pl.dietadvisor.common.recipe.enums.RecipeScrapeJobState.CANCELLED;
@@ -36,6 +40,7 @@ public class StrengthFactorySource implements RecipeScrapeSource {
     private final WebDriverService webDriverService;
     private final RecipeScrapeJobCancelRedisService recipeScrapeJobCancelRedisService;
     private final SeleniumProperties seleniumProperties;
+    private final AwsProperties awsProperties;
 
     @Override
     public RecipeScrapeJobSource getSource() {
@@ -67,7 +72,7 @@ public class StrengthFactorySource implements RecipeScrapeSource {
                 scrapeRecipe(webDriver, scrapeLogs);
                 hasNextDayButtonEnabled = goToNextDay(webDriver);
             } while (hasNextDayButtonEnabled);
-        } catch (InterruptedException | MalformedURLException exception) {
+        } catch (InterruptedException | IOException exception) {
             log.error("Exception thrown when processing source: {}, recipe scrape job id: {}, message: {}",
                     getSource(),
                     recipeScrapeJob.getId(),
@@ -128,7 +133,7 @@ public class StrengthFactorySource implements RecipeScrapeSource {
         webDriverService.sleep(1);
     }
 
-    private void scrapeRecipe(RemoteWebDriver webDriver, List<RecipeScrapeLog> scrapeLogs) {
+    private void scrapeRecipe(RemoteWebDriver webDriver, List<RecipeScrapeLog> scrapeLogs) throws IOException {
         scrapeLogs.add(getRecipeScrapeLog(webDriver, "#posilek1 > div.meal", 1));
         scrapeLogs.add(getRecipeScrapeLog(webDriver, "#posilek2 > div.meal", 2));
         scrapeLogs.add(getRecipeScrapeLog(webDriver, "#posilek3 > div.meal", 3));
@@ -136,15 +141,28 @@ public class StrengthFactorySource implements RecipeScrapeSource {
         scrapeLogs.add(getRecipeScrapeLog(webDriver, "#posilek5 > div.meal", 5));
     }
 
-    private RecipeScrapeLog getRecipeScrapeLog(RemoteWebDriver webDriver, String mealSelector, Integer mealNumber) {
+    private RecipeScrapeLog getRecipeScrapeLog(RemoteWebDriver webDriver, String mealSelector, Integer mealNumber) throws IOException {
         WebElement meal = webDriver.findElement(By.cssSelector(mealSelector));
 
         return RecipeScrapeLog.builder()
                 .mealNumbers(List.of(mealNumber))
                 .name(meal.findElement(By.cssSelector("h2")).getText().trim())
+                .imageName(getImageName(meal))
                 .productsNamesToQuantities(getProductsNamesToQuantities(meal))
                 .recipe(meal.findElement(By.cssSelector("p:last-child")).getText().trim())
                 .build();
+    }
+
+    private String getImageName(WebElement meal) throws IOException {
+        WebElement mealImage = meal.findElement(By.cssSelector("p > img"));
+        String imageSource = mealImage.getAttribute("src").trim();
+        String imageExtension = imageSource.substring(imageSource.lastIndexOf('.'));
+        String imageName = format("%s%s", UUID.randomUUID().toString(), imageExtension);
+        try (InputStream inputStream = new URL(imageSource).openStream()) {
+            Files.copy(inputStream, Paths.get(format("%s\\%s", awsProperties.getRecipesImagesAddress(), imageName)));
+        }
+
+        return imageName;
     }
 
     private Map<String, BigDecimal> getProductsNamesToQuantities(WebElement meal) {

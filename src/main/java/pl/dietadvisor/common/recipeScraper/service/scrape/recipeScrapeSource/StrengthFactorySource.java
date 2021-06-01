@@ -134,23 +134,28 @@ public class StrengthFactorySource implements RecipeScrapeSource {
     }
 
     private void scrapeRecipe(RemoteWebDriver webDriver, List<RecipeScrapeLog> scrapeLogs) throws IOException {
-        scrapeLogs.add(getRecipeScrapeLog(webDriver, "#posilek1 > div.meal", 1));
-        scrapeLogs.add(getRecipeScrapeLog(webDriver, "#posilek2 > div.meal", 2));
-        scrapeLogs.add(getRecipeScrapeLog(webDriver, "#posilek3 > div.meal", 3));
-        scrapeLogs.add(getRecipeScrapeLog(webDriver, "#posilek4 > div.meal", 4));
-        scrapeLogs.add(getRecipeScrapeLog(webDriver, "#posilek5 > div.meal", 5));
+        addRecipeScrapeLog(webDriver, scrapeLogs, "#posilek1 > div.meal", 1);
+        addRecipeScrapeLog(webDriver, scrapeLogs, "#posilek2 > div.meal", 2);
+        addRecipeScrapeLog(webDriver, scrapeLogs, "#posilek3 > div.meal", 3);
+        addRecipeScrapeLog(webDriver, scrapeLogs, "#posilek4 > div.meal", 4);
+        addRecipeScrapeLog(webDriver, scrapeLogs, "#posilek5 > div.meal", 5);
     }
 
-    private RecipeScrapeLog getRecipeScrapeLog(RemoteWebDriver webDriver, String mealSelector, Integer mealNumber) throws IOException {
+    private void addRecipeScrapeLog(RemoteWebDriver webDriver, List<RecipeScrapeLog> scrapeLogs, String mealSelector, Integer mealNumber) throws IOException {
         WebElement meal = webDriver.findElement(By.cssSelector(mealSelector));
+        String name = meal.findElement(By.cssSelector("h2")).getText().trim();
 
-        return RecipeScrapeLog.builder()
-                .mealNumbers(List.of(mealNumber))
-                .name(meal.findElement(By.cssSelector("h2")).getText().trim())
-                .imageName(getImageName(meal))
-                .productsNamesToQuantities(getProductsNamesToQuantities(meal))
-                .recipe(meal.findElement(By.cssSelector("p:last-child")).getText().trim())
-                .build();
+        boolean isDuplicated = scrapeLogs.stream()
+                .anyMatch(log -> log.getName().equals(name));
+        if (!isDuplicated) {
+            scrapeLogs.add(RecipeScrapeLog.builder()
+                    .mealNumbers(List.of(mealNumber))
+                    .name(name)
+                    .imageName(getImageName(meal))
+                    .productsNamesToQuantities(getProductsNamesToQuantities(meal))
+                    .recipe(meal.findElement(By.cssSelector("p:last-child")).getText().trim())
+                    .build());
+        }
     }
 
     private String getImageName(WebElement meal) throws IOException {

@@ -23,6 +23,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.Map.Entry;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
@@ -173,20 +174,29 @@ public class StrengthFactorySource implements RecipeScrapeSource {
     private Map<String, BigDecimal> getProductsNamesToQuantities(WebElement meal) {
         Map<String, BigDecimal> productsNamesToQuantities = new HashMap<>();
 
-        List<WebElement> productsElements = meal.findElements(By.cssSelector("ul:nth-child(6) > li > span.meal-exchange > span.exchange-ingredient > span.exchange-value"));
+        List<WebElement> productsElements = meal.findElements(By.cssSelector("ul:nth-child(6) > li"));
         productsElements.stream()
+                .filter(productElement -> "0".equals(productElement.getAttribute("childElementCount")))
                 .map(productElement -> productElement.getText().trim())
-                .map(rawProduct -> {
-                    String[] rawProductSplitByDash = rawProduct.split(" - ");
-                    String[] rawQuantitySplitByOpenBracket = rawProductSplitByDash[1].split("[(]");
+                .map(this::getProductNameToQuantity)
+                .forEach(entry -> productsNamesToQuantities.put(entry.getKey(), entry.getValue()));
 
-                    return Map.entry(
-                            rawProductSplitByDash[0].trim(),
-                            new BigDecimal(rawQuantitySplitByOpenBracket[1].trim().replace(" g)", "")));
-                })
+        List<WebElement> productsElementsWithChildren = meal.findElements(By.cssSelector("ul:nth-child(6) > li > span.meal-exchange > span.exchange-ingredient > span.exchange-value"));
+        productsElementsWithChildren.stream()
+                .map(productElement -> productElement.getText().trim())
+                .map(this::getProductNameToQuantity)
                 .forEach(entry -> productsNamesToQuantities.put(entry.getKey(), entry.getValue()));
 
         return productsNamesToQuantities;
+    }
+
+    private Entry<String, BigDecimal> getProductNameToQuantity(String rawProduct) {
+        String[] rawProductSplitByDash = rawProduct.split(" - ");
+        String[] rawQuantitySplitByOpenBracket = rawProductSplitByDash[1].split("[(]");
+
+        return Map.entry(
+                rawProductSplitByDash[0].trim(),
+                new BigDecimal(rawQuantitySplitByOpenBracket[1].trim().replace(" g)", "")));
     }
 
     private boolean goToNextDay(RemoteWebDriver webDriver) throws InterruptedException {

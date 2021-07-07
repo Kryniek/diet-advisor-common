@@ -200,11 +200,12 @@ public class StrengthFactorySource implements RecipeScrapeSource {
     }
 
     private boolean goToNextDay(RemoteWebDriver webDriver) throws InterruptedException {
+        webDriverService.sleep(1);
         By nextDayButtonSelector = By.cssSelector("body > div.container.sidenav_v1.sidenav_v1_page-container.hader_panel_v1__content > div > div.col-lg-9.col-md-9.col-sm-12.col-xs-12 > div > div.plan-user-view > div.user-diet-bottom-nav.clearfix > div:nth-child(2) > a");
         if (webDriverService.isElementExist(webDriver, nextDayButtonSelector)) {
             WebElement nextDayButton = webDriver.findElement(nextDayButtonSelector);
             nextDayButton.click();
-            webDriverService.sleep(1);
+            webDriverService.sleep(5);
 
             return true;
         }

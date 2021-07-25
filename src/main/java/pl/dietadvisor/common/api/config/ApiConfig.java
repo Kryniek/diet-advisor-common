@@ -27,7 +27,8 @@ import static org.springframework.context.annotation.FilterType.ASPECTJ;
 })
 @EnableDynamoDBRepositories(basePackages = {
         "pl.dietadvisor.common.recipe.repository.dynamodb",
-        "pl.dietadvisor.common.product.repository.dynamodb"
+        "pl.dietadvisor.common.product.repository.dynamodb",
+        "pl.dietadvisor.common.shoppingList.repository.dynamodb"
 })
 public class ApiConfig {
 }

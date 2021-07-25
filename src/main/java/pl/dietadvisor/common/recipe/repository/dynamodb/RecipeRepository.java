@@ -13,4 +13,6 @@ public interface RecipeRepository extends CrudRepository<Recipe, String> {
     List<Recipe> findByNameIn(List<String> names);
 
     Recipe findByName(String name);
+
+    List<Recipe> findByIdIn(List<String> ids);
 }

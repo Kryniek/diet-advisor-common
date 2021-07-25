@@ -157,4 +157,8 @@ public class RecipeService {
     public List<Recipe> getByNames(List<String> names) {
         return repository.findByNameIn(names);
     }
+
+    public List<Recipe> getByIds(List<String> ids) {
+        return repository.findByIdIn(ids);
+    }
 }

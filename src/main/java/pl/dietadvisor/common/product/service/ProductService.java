@@ -85,4 +85,8 @@ public class ProductService {
     public List<Product> getByNames(List<String> names) {
         return repository.findByNameIn(names);
     }
+
+    public List<Product> getByIds(List<String> ids) {
+        return repository.findByIdIn(ids);
+    }
 }

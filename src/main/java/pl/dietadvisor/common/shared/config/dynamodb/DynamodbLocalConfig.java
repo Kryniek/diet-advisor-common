@@ -11,7 +11,7 @@ import pl.dietadvisor.common.shared.config.properties.aws.AwsProperties;
 
 @Configuration
 @RequiredArgsConstructor
-@Profile("dev")
+@Profile({"dev", "dev-justa"})
 public class DynamodbLocalConfig {
     private final AwsProperties awsProperties;
 

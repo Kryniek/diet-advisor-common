@@ -11,4 +11,6 @@ import java.util.List;
 @EnableScan
 public interface RecipeRepository extends CrudRepository<Recipe, String> {
     List<Recipe> findByNameIn(List<String> names);
+
+    Recipe findByName(String name);
 }

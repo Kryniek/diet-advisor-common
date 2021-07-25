@@ -6,6 +6,7 @@ import pl.dietadvisor.common.product.model.dynamodb.Product;
 import pl.dietadvisor.common.product.service.ProductService;
 import pl.dietadvisor.common.recipe.model.dynamodb.Recipe;
 import pl.dietadvisor.common.recipe.repository.dynamodb.RecipeRepository;
+import pl.dietadvisor.common.shared.exception.custom.BadRequestException;
 import pl.dietadvisor.common.shared.exception.custom.NotFoundException;
 
 import java.math.BigDecimal;
@@ -38,11 +39,21 @@ public class RecipeService {
     }
 
     public Recipe create(Recipe recipe) {
+        Recipe existingRecipe = getByName(recipe.getName());
+        if (nonNull(existingRecipe)) {
+            throw new BadRequestException("Recipe: %s already exist.", recipe.getName());
+        }
+
         recipe.setId(null);
         recipe.setCreatedAt(now());
+        recipe.setSource(USER);
         setKcalAndMacro(recipe);
 
         return repository.save(recipe);
+    }
+
+    private Recipe getByName(String name) {
+        return repository.findByName(name);
     }
 
     public List<Recipe> create(List<Recipe> recipes) {

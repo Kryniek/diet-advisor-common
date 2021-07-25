@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Import;
 import pl.dietadvisor.common.product.config.ProductConfig;
 import pl.dietadvisor.common.recipe.config.RecipeConfig;
 import pl.dietadvisor.common.shared.config.ApplicationConfig;
+import pl.dietadvisor.common.shoppingList.config.ShoppingListConfig;
 
 import java.lang.annotation.*;
 
@@ -15,7 +16,8 @@ import java.lang.annotation.*;
         ApiConfig.class,
         ApplicationConfig.class,
         ProductConfig.class,
-        RecipeConfig.class
+        RecipeConfig.class,
+        ShoppingListConfig.class
 })
 public @interface Api {
 }

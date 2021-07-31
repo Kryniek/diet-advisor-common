@@ -13,6 +13,7 @@ import pl.dietadvisor.common.shoppingList.model.dynamodb.ShoppingList;
 import pl.dietadvisor.common.shoppingList.repository.dynamodb.ShoppingListRepository;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,12 +61,21 @@ public class ShoppingListService {
     }
 
     public ShoppingList generate(ShoppingListGeneratorRequest request) {
-        List<String> recipesIds = request.getRecipesIdsToQuantities()
-                .keySet()
-                .stream()
-                .distinct()
-                .collect(toList());
-        List<Recipe> recipes = getRecipesByIds(recipesIds);
+        List<Recipe> recipes = new ArrayList<>();
+        if (!isEmpty(request.getRecipesIdsToQuantities())) {
+            List<Recipe> recipesByIds = getRecipesByIds(request);
+            recipesByIds.stream()
+                    .filter(recipeById -> recipes.stream()
+                            .noneMatch(recipe -> recipe.getId().equals(recipeById.getId())))
+                    .forEach(recipes::add);
+        }
+        if (!isEmpty(request.getRecipesNamesToQuantities())) {
+            List<Recipe> recipesByNames = getRecipesByNames(request);
+            recipesByNames.stream()
+                    .filter(recipeByName -> recipes.stream()
+                            .noneMatch(recipe -> recipe.getId().equals(recipeByName.getId())))
+                    .forEach(recipes::add);
+        }
 
         return repository.save(ShoppingList.builder()
                 .source(GENERATED)
@@ -74,10 +84,35 @@ public class ShoppingListService {
                 .build());
     }
 
-    private List<Recipe> getRecipesByIds(List<String> recipesIds) {
+    private List<Recipe> getRecipesByIds(ShoppingListGeneratorRequest request) {
+        List<String> recipesIds = request.getRecipesIdsToQuantities()
+                .keySet()
+                .stream()
+                .distinct()
+                .collect(toList());
         List<Recipe> recipes = recipeService.getByIds(recipesIds);
         if (isEmpty(recipes)) {
             throw new NotFoundException("Recipes not found for ids: %s", recipesIds);
+        }
+        if (recipesIds.size() != recipes.size()) {
+            throw new NotFoundException("There is one or more not existing recipe which was trying to find by id. Check if recipes ids are correct.");
+        }
+
+        return recipes;
+    }
+
+    private List<Recipe> getRecipesByNames(ShoppingListGeneratorRequest request) {
+        List<String> recipesNames = request.getRecipesNamesToQuantities()
+                .keySet()
+                .stream()
+                .distinct()
+                .collect(toList());
+        List<Recipe> recipes = recipeService.getByNames(recipesNames);
+        if (isEmpty(recipes)) {
+            throw new NotFoundException("Recipes not found for names: %s", recipesNames);
+        }
+        if (recipesNames.size() != recipes.size()) {
+            throw new NotFoundException("There is one or more not existing recipe which was trying to find by name. Check if recipes names are correct.");
         }
 
         return recipes;
@@ -86,45 +121,93 @@ public class ShoppingListService {
     private Map<String, BigDecimal> getProductIdsToQuantities(ShoppingListGeneratorRequest request, List<Recipe> recipes) {
         Map<String, BigDecimal> productIdsToQuantities = new HashMap<>();
 
-        request.getRecipesIdsToQuantities().forEach((recipeId, recipeQuantity) -> {
-            Recipe recipe = recipes.stream()
-                    .filter(r -> r.getId().equals(recipeId))
-                    .findFirst()
-                    .orElseThrow(() -> new NotFoundException("Not found recipe with id: %s.", recipeId));
-            List<Product> products = productService.getByNames(recipe.getProductsNamesToQuantities()
-                    .keySet()
-                    .stream()
-                    .distinct()
-                    .collect(toList()));
-
-            recipe.getProductsNamesToQuantities().forEach((productName, productQuantity) -> {
-                Product product = products.stream()
-                        .filter(p -> p.getName().equals(productName))
+        if (!isEmpty(request.getRecipesIdsToQuantities())) {
+            request.getRecipesIdsToQuantities().forEach((recipeId, recipeQuantity) -> {
+                Recipe recipe = recipes.stream()
+                        .filter(r -> r.getId().equals(recipeId))
                         .findFirst()
-                        .orElseThrow(() -> new NotFoundException("Not found product with name: %s.", productName));
-                BigDecimal productQuantityMultipliedByRecipeQuantity = productQuantity.multiply(new BigDecimal(recipeQuantity));
-
-                productIdsToQuantities.computeIfPresent(product.getId(), (productId, value) -> value.add(productQuantityMultipliedByRecipeQuantity));
-                productIdsToQuantities.putIfAbsent(product.getId(), productQuantityMultipliedByRecipeQuantity);
-            });
-        });
-
-        List<Product> additionalProducts = productService.getByIds(
-                request.getAdditionalProducts()
+                        .orElseThrow(() -> new NotFoundException("Not found recipe with id: %s.", recipeId));
+                List<Product> products = productService.getByNames(recipe.getProductsNamesToQuantities()
                         .keySet()
                         .stream()
                         .distinct()
                         .collect(toList()));
 
-        request.getAdditionalProducts().forEach((productId, productQuantity) -> {
-            Product product = additionalProducts.stream()
-                    .filter(p -> p.getId().equals(productId))
-                    .findFirst()
-                    .orElseThrow(() -> new NotFoundException("Not found product with id: %s.", productId));
+                recipe.getProductsNamesToQuantities().forEach((productName, productQuantity) -> {
+                    Product product = products.stream()
+                            .filter(p -> p.getName().equals(productName))
+                            .findFirst()
+                            .orElseThrow(() -> new NotFoundException("Not found product with name: %s.", productName));
+                    BigDecimal productQuantityMultipliedByRecipeQuantity = productQuantity.multiply(new BigDecimal(recipeQuantity));
 
-            productIdsToQuantities.computeIfPresent(product.getId(), (key, value) -> value.add(productQuantity));
-            productIdsToQuantities.putIfAbsent(product.getId(), productQuantity);
-        });
+                    productIdsToQuantities.computeIfPresent(product.getId(), (productId, value) -> value.add(productQuantityMultipliedByRecipeQuantity));
+                    productIdsToQuantities.putIfAbsent(product.getId(), productQuantityMultipliedByRecipeQuantity);
+                });
+            });
+        }
+
+        if (!isEmpty(request.getRecipesNamesToQuantities())) {
+            request.getRecipesNamesToQuantities().forEach((recipeName, recipeQuantity) -> {
+                Recipe recipe = recipes.stream()
+                        .filter(r -> r.getName().equals(recipeName))
+                        .findFirst()
+                        .orElseThrow(() -> new NotFoundException("Not found recipe with name: %s.", recipeName));
+                List<Product> products = productService.getByNames(recipe.getProductsNamesToQuantities()
+                        .keySet()
+                        .stream()
+                        .distinct()
+                        .collect(toList()));
+
+                recipe.getProductsNamesToQuantities().forEach((productName, productQuantity) -> {
+                    Product product = products.stream()
+                            .filter(p -> p.getName().equals(productName))
+                            .findFirst()
+                            .orElseThrow(() -> new NotFoundException("Not found product with name: %s.", productName));
+                    BigDecimal productQuantityMultipliedByRecipeQuantity = productQuantity.multiply(new BigDecimal(recipeQuantity));
+
+                    productIdsToQuantities.computeIfPresent(product.getId(), (productId, value) -> value.add(productQuantityMultipliedByRecipeQuantity));
+                    productIdsToQuantities.putIfAbsent(product.getId(), productQuantityMultipliedByRecipeQuantity);
+                });
+            });
+        }
+
+        if (!isEmpty(request.getProductsIdsToQuantities())) {
+            List<Product> productsByIds = productService.getByIds(
+                    request.getProductsIdsToQuantities()
+                            .keySet()
+                            .stream()
+                            .distinct()
+                            .collect(toList()));
+
+            request.getProductsIdsToQuantities().forEach((productId, productQuantity) -> {
+                Product product = productsByIds.stream()
+                        .filter(p -> p.getId().equals(productId))
+                        .findFirst()
+                        .orElseThrow(() -> new NotFoundException("Not found product with id: %s.", productId));
+
+                productIdsToQuantities.computeIfPresent(product.getId(), (key, value) -> value.add(productQuantity));
+                productIdsToQuantities.putIfAbsent(product.getId(), productQuantity);
+            });
+        }
+
+        if (!isEmpty(request.getProductsNamesToQuantities())) {
+            List<Product> productsByNames = productService.getByNames(
+                    request.getProductsNamesToQuantities()
+                            .keySet()
+                            .stream()
+                            .distinct()
+                            .collect(toList()));
+
+            request.getProductsNamesToQuantities().forEach((productName, productQuantity) -> {
+                Product product = productsByNames.stream()
+                        .filter(p -> p.getName().equals(productName))
+                        .findFirst()
+                        .orElseThrow(() -> new NotFoundException("Not found product with name: %s.", productName));
+
+                productIdsToQuantities.computeIfPresent(product.getId(), (key, value) -> value.add(productQuantity));
+                productIdsToQuantities.putIfAbsent(product.getId(), productQuantity);
+            });
+        }
 
         return productIdsToQuantities;
     }

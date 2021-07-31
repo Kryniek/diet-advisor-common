@@ -12,5 +12,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class ShoppingListGeneratorRequest {
     private Map<String, Integer> recipesIdsToQuantities;
-    private Map<String, BigDecimal> additionalProducts;
+    private Map<String, Integer> recipesNamesToQuantities;
+    private Map<String, BigDecimal> productsIdsToQuantities;
+    private Map<String, BigDecimal> productsNamesToQuantities;
 }

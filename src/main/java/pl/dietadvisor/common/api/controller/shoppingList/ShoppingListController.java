@@ -41,9 +41,9 @@ public class ShoppingListController {
     }
 
     @PostMapping("/generate")
-    public ResponseEntity<ShoppingList> create(@RequestBody @NonNull ShoppingListGeneratorRequest request) {
-        if (isEmpty(request.getRecipesIdsToQuantities())) {
-            throw new BadRequestException("Recipes ids to quantities must be set.");
+    public ResponseEntity<ShoppingList> generate(@RequestBody @NonNull ShoppingListGeneratorRequest request) {
+        if (isEmpty(request.getRecipesIdsToQuantities()) && isEmpty(request.getRecipesNamesToQuantities())) {
+            throw new BadRequestException("Recipes ids to quantities or recipes names to quantities must be set.");
         }
 
         return new ResponseEntity<>(service.generate(request), CREATED);

@@ -22,6 +22,8 @@ import pl.dietadvisor.common.recipe.repository.dynamodb.RecipeRepository;
 import pl.dietadvisor.common.recipe.repository.dynamodb.RecipeScrapeJobRepository;
 import pl.dietadvisor.common.recipe.repository.dynamodb.RecipeScrapeLogRepository;
 import pl.dietadvisor.common.shared.config.properties.aws.AwsProperties;
+import pl.dietadvisor.common.shoppingList.model.dynamodb.ShoppingList;
+import pl.dietadvisor.common.shoppingList.repository.dynamodb.ShoppingListRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +45,7 @@ public class InitializeDataRunner implements ApplicationRunner {
     private final RecipeScrapeJobRepository recipeScrapeJobRepository;
     private final RecipeScrapeLogRepository recipeScrapeLogRepository;
     private final RecipeRepository recipeRepository;
+    private final ShoppingListRepository shoppingListRepository;
     private final ObjectMapper objectMapper;
     private final AwsProperties awsProperties;
 
@@ -54,6 +57,7 @@ public class InitializeDataRunner implements ApplicationRunner {
         insertRecipeScrapeJobs();
         insertRecipeScrapeLogs();
         insertRecipes();
+        insertShoppingLists();
         insertRecipesImages();
     }
 
@@ -132,6 +136,19 @@ public class InitializeDataRunner implements ApplicationRunner {
 
             Integer insertedRecipesSize = ((List<Recipe>) recipeRepository.saveAll(recipes)).size();
             log.info("Inserted test recipes: {}", insertedRecipesSize);
+        }
+    }
+
+    private void insertShoppingLists() throws IOException {
+        if (shoppingListRepository.count() == 0) {
+            String rawShoppingLists = getFileContent("shopping-lists");
+            List<ShoppingList> shoppingLists = objectMapper.readValue(rawShoppingLists,
+                    objectMapper
+                            .getTypeFactory()
+                            .constructCollectionType(List.class, ShoppingList.class));
+
+            Integer insertedShoppingListsSize = ((List<ShoppingList>) shoppingListRepository.saveAll(shoppingLists)).size();
+            log.info("Inserted test shopping lists: {}", insertedShoppingListsSize);
         }
     }
 

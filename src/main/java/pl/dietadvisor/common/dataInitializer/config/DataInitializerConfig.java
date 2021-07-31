@@ -8,7 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = "pl.dietadvisor.common.dataInitializer")
 @EnableDynamoDBRepositories(basePackages = {
         "pl.dietadvisor.common.product.repository.dynamodb",
-        "pl.dietadvisor.common.recipe.repository.dynamodb"
+        "pl.dietadvisor.common.recipe.repository.dynamodb",
+        "pl.dietadvisor.common.shoppingList.repository.dynamodb"
 })
 public class DataInitializerConfig {
 }

@@ -40,7 +40,11 @@ public class InitializeJustaDataRunner implements ApplicationRunner {
                         .constructCollectionType(List.class, Recipe.class));
 
         Integer insertedRecipesSize = ((List<Recipe>) recipeRepository.saveAll(recipes.stream()
-                .peek(recipe -> recipe.setName(format("Justa - %s", recipe.getName())))
+                .peek(recipe -> {
+                    if (!recipe.getName().startsWith("Justa - ")) {
+                        recipe.setName(format("Justa - %s", recipe.getName()));
+                    }
+                })
                 .collect(toList())))
                 .size();
         log.info("Inserted test Justa recipes: {}", insertedRecipesSize);

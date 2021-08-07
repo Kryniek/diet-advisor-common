@@ -41,6 +41,7 @@ public enum ProductType {
     }
 
     private static boolean isDairy(String name) {
+        List<String> exactNames = List.of("masło");
         List<String> keyNames = List.of("jogurt",
                 "ser ",
                 "Serek",
@@ -48,9 +49,19 @@ public enum ProductType {
                 "twarogi",
                 "jaja",
                 "jajka",
+                "jajko",
                 "kefir",
                 "mleko",
-                "tofu");
+                "tofu",
+                "skyr");
+        boolean containsExactName = exactNames
+                .stream()
+                .map(String::toLowerCase)
+                .anyMatch(name.toLowerCase()::equals);
+        if (containsExactName) {
+            return true;
+        }
+
         return keyNames
                 .stream()
                 .map(String::toLowerCase)
@@ -58,6 +69,9 @@ public enum ProductType {
     }
 
     private static boolean isVegetable(String name) {
+        List<String> forbiddenNames = List.of("konserwow",
+                "przecier",
+                "w proszku");
         List<String> keyNames = List.of("rukola",
                 "Rzodkiewka",
                 "Pomidor",
@@ -83,7 +97,20 @@ public enum ProductType {
                 "Oliwki",
                 "marchew",
                 "pieczarki",
-                "seler ");
+                "seler ",
+                "koperek",
+                "bób",
+                "szpinak",
+                "imbir",
+                "sałat");
+        boolean containsForbiddenName = forbiddenNames
+                .stream()
+                .map(String::toLowerCase)
+                .anyMatch(name.toLowerCase()::contains);
+        if (containsForbiddenName) {
+            return false;
+        }
+
         return keyNames
                 .stream()
                 .map(String::toLowerCase)
@@ -102,7 +129,13 @@ public enum ProductType {
                 "Melon",
                 "Agrest",
                 "mandarynk",
-                "pomarańcz");
+                "pomarańcza",
+                "pomarańcze",
+                "truskawk",
+                "borówk",
+                "maliny",
+                "morela",
+                "brzoskwinia");
         return keyNames
                 .stream()
                 .map(String::toLowerCase)
@@ -111,7 +144,9 @@ public enum ProductType {
 
     private static boolean isSeedAndNut(String name) {
         List<String> keyNames = List.of("migdały",
-                "Orzechy");
+                "Orzechy",
+                "pestki",
+                "rodzynki");
         return keyNames
                 .stream()
                 .map(String::toLowerCase)
